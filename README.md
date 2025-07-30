@@ -1,4 +1,4 @@
-# Direct Send Abuse - Header Analyzer
+# Direct Send Abuse - Header Analyzer
 Paste message headers, click **Analyze**, and see whether the email matches a typical Direct Send abuse profile.
 
 https://jasonsford.github.io/directsendanalyzer
