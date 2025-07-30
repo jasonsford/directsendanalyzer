@@ -22,9 +22,7 @@ th,td{border:1px solid #ccc;padding:8px;text-align:left;font-size:14px;}
 <div id="result"></div>
 
 <script>
-/* ------------------------------------------------------------------
-   Friendly labels for result table
------------------------------------------------------------------- */
+// Labels for results table
 const LABELS = {
   smtpDest : 'SMTP destination ✔ *.protection.outlook.com and ✖ *.pphosted.com',
   authAs   : 'AuthAs header = Anonymous',
@@ -37,9 +35,6 @@ const LABELS = {
   scl      : 'SCL score 0 or 1'
 };
 
-/* ------------------------------------------------------------------
-   Helper functions
------------------------------------------------------------------- */
 // Return first occurrence of header <name>
 function getHeader(all, name) {
   const re = new RegExp('^' + name + ':\\s*([^\n]*?)$', 'im');
@@ -68,9 +63,7 @@ function parseAddr(line) {
   return addr.replace(/"|'|\s/g, '').split(',')[0];
 }
 
-/* ------------------------------------------------------------------
-   Main analysis
------------------------------------------------------------------- */
+// Analyze the message headers
 function analyze() {
   const raw = document.getElementById('headers').value;
   if (!raw.trim()) { alert('No headers provided.'); return; }
@@ -93,9 +86,7 @@ function analyze() {
   render(f, verdict);
 }
 
-/* ------------------------------------------------------------------
-   Render results
------------------------------------------------------------------- */
+// Render the results
 function render(f, verdict) {
   let html = '<table><tr><th>Check</th><th>Match</th></tr>';
   for (const [k, v] of Object.entries(f)) {
