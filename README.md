@@ -10,19 +10,22 @@ Attackers abuse the Direct Send feature in Microsoft 365, which is intended to a
 * Have a Microsoft EOP SCL score of 0 or 1
 * Fail SPF, DKIM, and DMARC
 
-The tool applies those indicators, drawn from research on Direct Send abuse attacks:  
+The tool applies those indicators, drawn from Proofpoint research on Direct Send abuse attacks:  
 <https://www.proofpoint.com/us/blog/email-and-cloud-threats/attackers-abuse-m365-for-internal-phishing>
 
-## How to use this tool
+## Securing Proofpoint Deployments Against M365 Direct Abuse & Direct Delivery Attacks
+Proofpoint's [Microsoft 365 Integration Guide and Best Practices](https://proofpoint.my.site.com/community/s/article/Best-Practices-Office-365-Inbound-and-Outbound-Mail-Integration) document outlines the recommended steps to prevent malicious emails from bypassing Proofpoint and going directly to Microsoft 365.
+
+## How to use the Header Analyzer tool
 1. Open the [**Header Analyzer**](https://jasonsford.github.io/directsendanalyzer/) link.  
 2. Copy the full message headers from Outlook (Ctrl+F1 → *Message Options*).  
 3. Paste them into the text box.
 4. Click **Analyze**.  
 5. Review the color‑coded table and verdict.
 
-**<span style="color:#14892c;">Green</span>** = the message headers match the criteria for a Direct Send abuse attack.
+**Green** = the message headers match the criteria for a Direct Send abuse attack.
 
-**<span style="color:#d73a49;">Red</span>** = the message headers do **not** match the criteria for a Direct Send abuse attack.
+**Red** = the message headers do **not** match the common criteria for a Direct Send abuse attack.
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue to discuss what you would like to change.
