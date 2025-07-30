@@ -14,7 +14,7 @@ The tool applies those indicators, drawn from research on Direct Send abuse atta
 <https://www.proofpoint.com/us/blog/email-and-cloud-threats/attackers-abuse-m365-for-internal-phishing>
 
 ## How to use this tool
-1. Open the **Header Analyzer** link.  
+1. Open the [**Header Analyzer**](https://jasonsford.github.io/directsendanalyzer/) link.  
 2. Copy the full message headers from Outlook (Ctrl+F1 → *Message Options*).  
 3. Paste them into the text box.
 4. Click **Analyze**.  
