@@ -1,4 +1,4 @@
-# Direct Send Abuse - Header Analyzer
+# Direct Send Abuse - Header Analyzer
 Paste message headers, click **Analyze**, and see whether the email matches a typical Direct Send abuse profile.
 
 https://jasonsford.github.io/directsendanalyzer
@@ -10,7 +10,7 @@ Attackers abuse the Direct Send feature in Microsoft 365, which is intended to a
 * Have a Microsoft EOP SCL score of 0 or 1
 * Fail SPF, DKIM, and DMARC
 
-The tool applies those indicators, drawn from Proofpoint research on Direct Send abuse attacks:  
+This tool applies those indicators drawn from Proofpoint research on Direct Send abuse attacks:  
 <https://www.proofpoint.com/us/blog/email-and-cloud-threats/attackers-abuse-m365-for-internal-phishing>
 
 ## Securing Proofpoint Deployments Against M365 Direct Abuse & Direct Delivery Attacks
