@@ -1,7 +1,7 @@
 # Direct Send Abuse - Header Analyzer
 Paste message headers, click **Analyze**, and see whether the email matches a typical Direct Send abuse profile.
 
-https://jasonsford.github.io/direct-send-analyzer/  
+https://jasonsford.github.io/directsendanalyzer
 
 ## What is Direct Send Abuse?
 Attackers abuse the Direct Send feature in Microsoft 365, which is intended to allow legacy applications and devices like multi-function copiers to send email. These messages:
