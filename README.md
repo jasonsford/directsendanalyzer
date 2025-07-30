@@ -27,6 +27,11 @@ Proofpoint's [Microsoft 365 Integration Guide and Best Practices](https://proofp
 
 **Red** = the message headers do **not** match the common criteria for a Direct Send abuse attack.
 
+## What does this tool do with my data?
+This tool is provided at no cost. All code is executed client-side in your web browser. No information pasted into this tool is shared with GitHub, Proofpoint, or Jason Ford.
+
+This repository is public and users are invited to inspect the code to confirm its functionality.
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue to discuss what you would like to change.
 
