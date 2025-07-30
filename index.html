@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Direct Send Header Analyzer</title>
+<style>
+body{font-family:Arial, sans-serif;max-width:800px;margin:40px auto;}
+textarea{width:100%;height:250px;}
+button{padding:10px 20px;margin-top:10px;cursor:pointer;}
+table{border-collapse:collapse;width:100%;margin-top:20px;}
+th,td{border:1px solid #ccc;padding:8px;text-align:left;font-size:14px;}
+.pass{background:#c8e6c9;}
+.fail{background:#ffcdd2;}
+</style>
+</head>
+<body>
+<h2>Direct Send Abuse – Message Header Analyzer</h2>
+<p>Paste full message headers and click <strong>Analyze</strong>.</p>
+<textarea id="headers" placeholder="Paste message headers here..."></textarea><br>
+<button id="analyze">Analyze</button>
+
+<div id="result"></div>
+
+<script>
+/* ------------------------------------------------------------------
+   Friendly labels for result table
+------------------------------------------------------------------ */
+const LABELS = {
+  smtpDest : 'SMTP destination ✔ *.protection.outlook.com and ✖ *.pphosted.com',
+  authAs   : 'AuthAs header = Anonymous',
+  spf      : 'SPF result = fail / temperror / softfail',
+  dkim     : 'DKIM result = none / fail',
+  dmarc    : 'DMARC result = fail / temperror / none',
+  compauth : 'CompAuth = none / fail',
+  fromSpoof: 'From address matches To address (spoofed internal user)',
+  direction: 'MessageDirectionality = Incoming',
+  scl      : 'SCL score 0 or 1'
+};
+
+/* ------------------------------------------------------------------
+   Helper functions
+------------------------------------------------------------------ */
+// Return first occurrence of header <name>
+function getHeader(all, name) {
+  const re = new RegExp('^' + name + ':\\s*([^\n]*?)$', 'im');
+  const m  = all.match(re);
+  return m ? m[1].trim() : '';
+}
+
+// Rule: at least one *.protection.outlook.com hop AND zero *.pphosted.com hops
+function passesSmtpDest(all) {
+  let hasProtection = false;
+  let hasPphosted   = false;
+  const rx = /^Received:[\s\S]*?by\s+([^;\n\r]+)/gim;
+  for (const m of all.matchAll(rx)) {
+    const host = m[1].trim().split(/[\s(]/)[0]; // strip port/parens
+    if (/\.protection\.outlook\.com$/i.test(host)) hasProtection = true;
+    if (/\.pphosted\.com$/i.test(host))            hasPphosted   = true;
+  }
+  return hasProtection && !hasPphosted;
+}
+
+const same = (a, b) => a && b && a.toLowerCase() === b.toLowerCase();
+function parseAddr(line) {
+  if (!line) return '';
+  const m = line.match(/<([^>]+)>/);
+  const addr = m ? m[1] : line;
+  return addr.replace(/"|'|\s/g, '').split(',')[0];
+}
+
+/* ------------------------------------------------------------------
+   Main analysis
+------------------------------------------------------------------ */
+function analyze() {
+  const raw = document.getElementById('headers').value;
+  if (!raw.trim()) { alert('No headers provided.'); return; }
+
+  const f = {};
+  f.smtpDest  = passesSmtpDest(raw);
+  f.authAs    = /^X-MS-Exchange-Organization-AuthAs:\s*Anonymous/im.test(raw);
+  f.spf       = /Received-SPF:\s*(fail|temperror|softfail)/i.test(raw) || /spf=(fail|temperror|softfail)/i.test(raw);
+  f.dkim      = /dkim=(none|fail|temperror|invalid)/i.test(raw) || /^DKIM-Signature:/im.test(raw) === false;
+  f.dmarc     = /dmarc=(fail|temperror|none)/i.test(raw);
+  f.compauth  = /compauth=(none|fail)/i.test(raw) || /^CompAuth:\s*(none|fail)/im.test(raw) || /^X-MS-Exchange-Organization-CompAuth-Result:\s*(none|fail)/im.test(raw);
+  const from  = parseAddr(getHeader(raw, 'From'));
+  const to    = parseAddr(getHeader(raw, 'To'));
+  f.fromSpoof = same(from, to);
+  f.direction = /^X-MS-Exchange-Organization-MessageDirectionality:\s*Incoming/im.test(raw);
+  f.scl       = /SCL:\s*[01]/i.test(raw);
+
+  const required = ['smtpDest','authAs','spf','dkim','dmarc','compauth','fromSpoof','direction','scl'];
+  const verdict  = required.every(k => f[k]);
+  render(f, verdict);
+}
+
+/* ------------------------------------------------------------------
+   Render results
+------------------------------------------------------------------ */
+function render(f, verdict) {
+  let html = '<table><tr><th>Check</th><th>Match</th></tr>';
+  for (const [k, v] of Object.entries(f)) {
+    html += `<tr class="${v ? 'pass' : 'fail'}"><td>${LABELS[k] || k}</td><td>${v ? 'Yes' : 'No'}</td></tr>`;
+  }
+  html += '</table>';
+  html += `<h3>${verdict ? 'This message is likely a Direct Send attack.' : 'This message does NOT meet the criteria for a Direct Send attack.'}</h3>`;
+  document.getElementById('result').innerHTML = html;
+}
+
+document.getElementById('analyze').addEventListener('click', analyze);
+</script>
+</body>
+</html>
