@@ -7,7 +7,7 @@ https://jasonsford.github.io/directsendanalyzer
 Attackers abuse the Direct Send feature in Microsoft 365, which is intended to allow legacy applications and devices like multi-function copiers to send email. These messages:
 
 * Spoof an internal user in both the To and From address
-* Have a Microsoft EOP SCL score of 0 or 1
+* Have a Microsoft EOP SCL score of 0 or 1
 * Fail SPF, DKIM, and DMARC
 
 The tool applies those indicators, drawn from Proofpoint research on Direct Send abuse attacks:  
