@@ -24,12 +24,12 @@ th,td{border:1px solid #ccc;padding:8px;text-align:left;font-size:14px;}
 <script>
 // Labels for results table
 const LABELS = {
-  smtpDest : 'SMTP destination ✔ *.protection.outlook.com and ✖ *.pphosted.com',
+  smtpDest : 'SMTP destination ✔ *.protection.outlook.com and ✖ *.pphosted.com',
   authAs   : 'AuthAs header = Anonymous',
-  spf      : 'SPF result = fail / temperror / softfail',
-  dkim     : 'DKIM result = none / fail',
-  dmarc    : 'DMARC result = fail / temperror / none',
-  compauth : 'CompAuth = none / fail',
+  spf      : 'SPF = fail / temperror / softfail (Authentication‑Results)',
+  dkim     : 'DKIM = none / fail (Authentication‑Results)',
+  dmarc    : 'DMARC = fail / temperror / none (Authentication‑Results)',
+  compauth : 'CompAuth = none / fail (Authentication‑Results)',
   fromSpoof: 'From address matches To address (spoofed internal user)',
   direction: 'MessageDirectionality = Incoming',
   scl      : 'SCL score 0 or 1'
@@ -68,18 +68,21 @@ function analyze() {
   const raw = document.getElementById('headers').value;
   if (!raw.trim()) { alert('No headers provided.'); return; }
 
+  const authRes = getHeader(raw, 'Authentication-Results').toLowerCase();
+  
   const f = {};
   f.smtpDest  = passesSmtpDest(raw);
-  f.authAs    = /^X-MS-Exchange-Organization-AuthAs:\s*Anonymous/im.test(raw);
-  f.spf       = /Received-SPF:\s*(fail|temperror|softfail)/i.test(raw) || /spf=(fail|temperror|softfail)/i.test(raw);
-  f.dkim      = /dkim=(none|fail|temperror|invalid)/i.test(raw) || /^DKIM-Signature:/im.test(raw) === false;
-  f.dmarc     = /dmarc=(fail|temperror|none)/i.test(raw);
-  f.compauth  = /compauth=(none|fail)/i.test(raw) || /^CompAuth:\s*(none|fail)/im.test(raw) || /^X-MS-Exchange-Organization-CompAuth-Result:\s*(none|fail)/im.test(raw);
+  f.authAs    = /^x-ms-exchange-organization-authas:\s*anonymous/im.test(raw);
+  f.spf       = /spf=(fail|temperror|softfail)/.test(authRes);
+  f.dkim      = /dkim=(none|fail|temperror|invalid)/.test(authRes);
+  f.dmarc     = /dmarc=(fail|temperror|none)/.test(authRes);
+  f.compauth  = /compauth=(none|fail)/.test(authRes);
+
   const from  = parseAddr(getHeader(raw, 'From'));
   const to    = parseAddr(getHeader(raw, 'To'));
   f.fromSpoof = same(from, to);
-  f.direction = /^X-MS-Exchange-Organization-MessageDirectionality:\s*Incoming/im.test(raw);
-  f.scl       = /SCL:\s*[01]/i.test(raw);
+  f.direction = /^x-ms-exchange-organization-messagedirectionality:\s*incoming/im.test(raw);
+  f.scl       = /scl:\s*[01]/i.test(raw);
 
   const required = ['smtpDest','authAs','spf','dkim','dmarc','compauth','fromSpoof','direction','scl'];
   const verdict  = required.every(k => f[k]);
