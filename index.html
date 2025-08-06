@@ -24,7 +24,7 @@ th,td{border:1px solid #ccc;padding:8px;text-align:left;font-size:14px;}
 <script>
 // Labels for results table
 const LABELS = {
-  smtpDest : 'SMTP destination ✔ *.protection.outlook.com and ✖ *.pphosted.com',
+  smtpDest : 'SMTP destination is *.protection.outlook.com and does not include *.pphosted.com',
   authAs   : 'AuthAs header = Anonymous',
   spf      : 'SPF = fail / temperror / softfail (Authentication‑Results)',
   dkim     : 'DKIM = none / fail (Authentication‑Results)',
@@ -104,3 +104,4 @@ document.getElementById('analyze').addEventListener('click', analyze);
 </script>
 </body>
 </html>
+
